@@ -1,155 +1,75 @@
-Company Order Metadata
+# Company Order Metadata
 
-Extends WooCommerce to add an internal, immutable reference code to each order at creation time.
+WooCommerce plugin to add **immutable internal reference codes** to orders at creation time.
 
-Overview
+The reference code is generated once per order, stored as order meta, and displayed in the WooCommerce admin.  
+It is designed to be lightweight, predictable, and safe for high-volume stores.
 
-This plugin generates a custom internal reference code for WooCommerce orders using the format:
+---
 
-CMP-{ORDER_ID}-{YEAR}
+## ✨ Features
 
+- Generates a unique internal reference code on order creation
+- Code is **immutable** (created once, never regenerated)
+- Displayed as **read-only** in the WooCommerce admin order view
+- Filterable reference format for extensibility
+- Compatible with WooCommerce **HPOS (High-Performance Order Storage)**
+- No settings screen, no background processes, no overhead
 
-The reference code is:
+---
 
-Generated once at order creation
+## 🧱 Architecture
 
-Stored as order meta
+- Fully namespaced plugin
+- Single-responsibility classes
+- No global functions
+- Pure PHP logic isolated for unit testing
+- WooCommerce hooks only (no custom tables)
 
-Displayed as read-only in the WooCommerce admin
+The plugin is intentionally minimal and avoids unnecessary abstractions.
 
-Fully compatible with WooCommerce HPOS (High-Performance Order Storage)
+---
 
-Architecture
+## 🪝 Hooks Used
 
-Namespaced plugin (CompanyOrderMetadata)
+### `woocommerce_checkout_order_processed`
 
-Single entry point (CompanyOrderMetadataPlugin)
+Used to ensure:
+- The order ID already exists
+- The reference code is generated **only once**
+- No duplication on order updates or edits
 
-Clear separation of responsibilities:
+---
 
-Domain logic (ReferenceCode)
+### `woocommerce_admin_order_data_after_order_details`
 
-WooCommerce integration (OrderMetadata)
+Used to display the reference code as **read-only metadata** in the admin order screen.
 
-No global functions
+---
 
-Extensibility via WordPress hooks (no inheritance)
+## 🧩 Reference Code Format
 
-Hooks Used
-woocommerce_checkout_order_processed
+Default format: CMP-{ORDER_ID}-{YEAR}
 
-Used to generate and persist the reference code once the order ID exists.
 
-Idempotent: prevents duplicate generation
+Example: CMP-3324-2025
 
-Runs only on order creation
 
-woocommerce_admin_order_data_after_order_details
+The format is deterministic and human-readable by design.
 
-Displays the reference code in the order admin screen as read-only metadata.
+---
 
-Extensibility
+## 🔌 Filters
 
-The reference code can be modified by third-party code using the filter:
+### `company_order_reference_code`
 
-add_filter(
-  'company_order_reference_code',
-  function ( $code, $order ) {
-    return 'CUSTOM-' . $code;
-  },
-  10,
-  2
-);
+Allows modifying the reference code before it is saved.
 
-HPOS Compatibility
+```php
+add_filter( 'company_order_reference_code', function ( $code, $order ) {
+	return 'CUSTOM-' . $order->get_id();
+}, 10, 2 );
 
-This plugin is fully compatible with WooCommerce High-Performance Order Storage (HPOS).
 
-Uses only the WC_Order API
 
-No direct database queries
 
-Declares compatibility using FeaturesUtil
-
-FeaturesUtil::declare_compatibility(
-  'custom_order_tables',
-  __FILE__,
-  true
-);
-
-Testing
-
-This project includes unit tests only (no WordPress or database dependency).
-
-Why unit tests only?
-
-Local development on Windows / LocalWP
-
-Faster and more reliable CI execution
-
-Business logic isolated from infrastructure
-
-Integration tests (WordPress + WooCommerce + MySQL) are intended to be run in Linux/Docker or CI environments if required.
-
-Running Tests Locally
-
-From the plugin root directory:
-
-composer install
-php vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist
-
-Test Coverage
-
-Unit tests validate:
-
-Reference code format
-
-Default year handling
-
-Filter override behavior
-
-Filter isolation between tests
-
-Tests are located in:
-
-tests/unit/
-
-Performance Considerations
-
-Executes only once per order
-
-Single meta read + single meta write
-
-No queries on admin list or frontend
-
-Safe for high-volume WooCommerce stores
-
-File Structure
-company-order-metadata/
-├─ .github/workflows/
-│  └─ unit-tests.yml
-├─ includes/
-│  ├─ class-order-metadata.php
-│  └─ class-reference-code.php
-├─ tests/
-│  ├─ bootstrap.php
-│  └─ unit/
-│     └─ ReferenceCodeTest.php
-├─ company-order-metadata.php
-├─ composer.json
-├─ phpunit.xml.dist
-└─ README.md
-
-Possible Improvements
-
-REST API exposure for reference code
-
-Optional regeneration tool (admin-only)
-
-Integration test suite using Docker / CI
-
-Bulk export support
-
-License
-
-GPL v2 or later
