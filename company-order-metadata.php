@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Company Order Metadata
- * Plugin URI: https://example.com/company-order-metadata
+ * Plugin URI: https://jfelixdev.com/
  * Description: Extends WooCommerce to add custom internal reference codes to orders.
  * Version: 1.0.0
- * Author: Your Company
- * Author URI: https://example.com
+ * Author: Jose Zapata
+ * Author URI: https://jfelixdev.com/
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: company-order-metadata
@@ -13,7 +13,7 @@
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * WC requires at least: 5.0
- * WC tested up to: 8.0
+ * WC tested up to: 9.8
  */
 namespace CompanyOrderMetadata;
 
