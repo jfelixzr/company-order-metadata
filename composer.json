@@ -1,0 +1,12 @@
+{
+  "name": "company/company-order-metadata",
+  "type": "wordpress-plugin",
+  "require-dev": {
+    "phpunit/phpunit": "^9.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "CompanyOrderMetadata\\": "includes/"
+    }
+  }
+}
