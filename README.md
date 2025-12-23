@@ -69,7 +69,47 @@ Allows modifying the reference code before it is saved.
 add_filter( 'company_order_reference_code', function ( $code, $order ) {
 	return 'CUSTOM-' . $order->get_id();
 }, 10, 2 );
+```
 
+## 🧪 Testing
 
+This project includes **pure PHPUnit unit tests**.  
+No WordPress bootstrap or database is required.
 
+### What is tested
+
+- Reference code generation logic
+- Explicit year handling
+- Default current-year fallback
+- Filter override behavior
+- No-filter fallback behavior
+
+### Run tests locally
+
+```bash
+php vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist
+```
+
+## 🚀 Performance Considerations
+
+- Runs only once per order
+- Single meta write + single read
+- No frontend execution
+- No additional database queries
+- Safe for large WooCommerce stores
+
+---
+
+## 📦 Requirements
+
+- WordPress 5.8+
+- PHP 7.4+
+- WooCommerce 5.0+
+
+---
+
+## 📜 License
+
+GPL v2 or later  
+Fully compatible with WordPress and WooCommerce licensing.
 
